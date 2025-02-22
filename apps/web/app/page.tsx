@@ -5,7 +5,7 @@ export default async function Home() {
 
   return (
     <div>
-      {"hi"}
+      {"hi there staging deployment done"}
       {users.length > 0 ? (
         users.map((user) => <div key={user.id}>{user.username}</div>)
       ) : (
