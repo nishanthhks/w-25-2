@@ -14,9 +14,8 @@ jobs:
     steps:
       - name: SSH Into server
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/ssh_key
-          chmod 600 ~/ssh_key
-          ssh -o StrictHostKeyChecking=no -i ~/ssh_key ubuntu@54.215.126.102 << EOF
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" &> ~/ssh_key
+          ssh -i ~/ssh_key ubuntu@54.215.126.102
           cd w-25-2/ && git pull
           pnpm install
           pnpm run build
