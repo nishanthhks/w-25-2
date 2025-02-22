@@ -1,22 +1,18 @@
 name: Deploy to staging
-
-on: 
-  push: 
-    branches:
-      - "main"
+on:
+  push:
+    branches: [ main ]
 
 jobs:
   redeploy_everything:
-    name: Deploying Everything to staging cluster
-
     runs-on: ubuntu-latest
-
+    name: Deploying everything to the staging cluster
     steps:
-      - name: SSH Into server
-        run: |
+      - run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" &> ~/ssh_key
-          ssh -i ~/ssh_key ubuntu@54.215.126.102
-          cd w-25-2/ && git pull
-          pnpm install
-          pnpm run build
-          pm2 restart all
+          mkdir -p /home/runner/.ssh
+          ls /home/runner/.ssh
+          touch /home/runner/.ssh/known_hosts
+          echo "${{ secrets.KNOWN_HOSTS }}" &> /home/runner/.ssh/known_hosts
+          chmod 700 /home/runner/ssh_key
+          ssh -i ~/ssh_key root@54.215.126.102 -t "cd w-25-2/ && git pull origin main && export PATH=/root/.nvm/versions/node/v22.13.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && npm install -g pnpm && pnpm install && pnpm run build && pm2 restart all"
